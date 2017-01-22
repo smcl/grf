@@ -3,9 +3,9 @@
 "Genetic Random Forest" - Quick hacked together attempt to build an implementation of decision trees and then random forest in python. There's already heaps of implementations out there, this is for my own personal amusement.
 
 Rough idea is to take my vague memories of my AI course at uni to define a Decision Tree structure which can be easily generated, mutated and executed to produce both simple and complex decisions at each node in the decision tree. I've created an extremely simple stack-based VM for this (in `grf/decisionvm.py`) with three instructions:
-# PushConstant
-# PushAttribute
-# BinaryOperator
+* PushConstant
+* PushAttribute
+* BinaryOperator
 
 This is all I'm going to implement for starters - the simplest case (iris data set) doesn't seem to need anything more than a single. I wanted to leave the possibility open to add more complex decisions, and the little stack VM permits this I think.
 
