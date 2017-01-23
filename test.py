@@ -46,10 +46,11 @@ mut = Mutator(env)
 
 
 dt_population = [ dtg.generate() for i in range(num_trees) ]
-test_data = random.sample(iris_data, 100) # should be something like random.sample(test_data, 100)
+train_data = random.sample(iris_data, 100) # should be something like random.sample(test_data, 100)
+verify_data = [ d for d in iris_data if d not in train_data ]
 cull_threshold = int(len(dt_population) * 0.25)
 
-def calc_fitness(dt):
+def calc_fitness(dt, test_data):
     dt.fitness = 0
     for test in test_data:
         input_val = test[0]
@@ -68,23 +69,28 @@ def print_stats(dt_pop, recalc):
     print("worst_fitness = %d" % (min(fitnesses)))
 
 for i in range(num_generations):
-    print i
+    #print i
     #print len(dt_population)
     for dt in dt_population:
         dt_mut = deepcopy(dt)
         mut.mutate(dt_mut)
-        calc_fitness(dt)
-        calc_fitness(dt_mut)
+        calc_fitness(dt, train_data)
+        calc_fitness(dt_mut, train_data)
         if dt_mut.fitness > dt.fitness:
             dt = dt_mut
     dt_population.sort(key = lambda dt: dt.fitness, reverse = True)
     #print(dt_population[-1].fitness)
-    print_stats(dt_population, False)
+    #print_stats(dt_population, False)
 
     useless_count = len([ x for x in dt_population if not x.fitness ])
     to_cull = max(cull_threshold, useless_count)
-    print "culling %d" % (to_cull)
-    print "len(dt_population) = %d" % (len(dt_population))
+    #print "culling %d" % (to_cull)
+    #print "len(dt_population) = %d" % (len(dt_population))
 
     del dt_population[-to_cull:]
     dt_population += [ dtg.generate() for i in range(to_cull) ]
+
+print "completed"
+print_stats(dt_population, True)
+best = dt_population[-1]
+calc_fitness(best, verify_data)
